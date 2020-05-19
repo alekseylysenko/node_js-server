@@ -1,16 +1,18 @@
 {
-  "name": "shop",
+  "name": "node_lite_shop",
   "version": "1.0.0",
-  "description": "mobile shop",
-  "main": "index.js",
+  "description": "",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Alex",
+  "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1",
-    "mysql": "^2.18.1",
-    "pug": "^2.0.4"
+    "express": "^4.16.4",
+    "mustard-ui": "0.0.8",
+    "mysql": "^2.17.0",
+    "nodemailer": "^6.4.6",
+    "pug": "^2.0.3"
   }
 }
