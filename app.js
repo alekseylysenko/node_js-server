@@ -16,7 +16,7 @@ let mysql = require('mysql');
 * настраиваем модуль
 */
 app.use(express.json());
-
+app.use(express.urlencoded());
 const nodemailer = require('nodemailer');
 let con = mysql.createPool({
   host: 'localhost',
@@ -136,9 +136,54 @@ app.post('/finish-order', function(req, res){
     saveOrder(req.body, result);
     res.send('1')
     });
-  }else {(res.send('0') )
+  }else {res.send('0') 
 }
   
+});
+
+app.get('/admin', function (req, res) {
+    res.render('admin', {});
+});
+
+
+app.get('/admin-order', function (req, res) {
+
+  con.query('SELECT shop_order.user_id as user_id,shop_order.id as id, shop_order.goods_id as goods_id,shop_order.goods_cost as goods_cost, shop_order.goods_amount as goods_amount,shop_order.total as total,shop_order.total as total,from_unixtime(date, "%d.%m.%Y %H:%m") as human_date,user_info.user_name as user,user_info.user_phone as phone,user_info.address as address FROM lite_shop.shop_order left join user_info on shop_order.user_id = user_info.id order by id desc', function (error, result, fields) {
+    if (error) throw error;
+    res.render('admin-order', { order: JSON.parse(JSON.stringify(result)) });
+  });
+});
+/* =========Login Form================= */
+app.get('/login', function (req, res) {
+  res.render('login', {});
+});
+
+app.post('/login', function (req, res) {
+  console.log(req.body);
+  
+  con.query(
+    'SELECT * FROM users WHERE login="' + req.body.login+ '" and password="'+ req.body.password+'"',
+    function (error, result) {
+      if (error) reject(error);
+      console.log(result);
+    
+     if(result == ""){
+      console.log('error user not found');
+      res.redirect('/login');
+    }else{
+       result = JSON.parse(JSON.stringify(result));
+       res.cookie('hash', 'blablabla');
+
+      sql ="update users set hash='blablabla' where id=" +result[0]['id'];
+      con.query(sql, function (error, result, fields) {
+        if (error) throw error; 
+      res.redirect('/admin');
+
+      });
+    };
+  });
+  
+/*   res.render('admin', {}); */
 });
 function saveOrder(data, result){
   // data - информация о пользователе 
